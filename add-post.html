@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="blogApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Post</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-image: url('https://images.unsplash.com/photo-1495465798138-718f86d1a4bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        /* Overlay to improve text readability */
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(125, 181, 238, 0.3);
+            z-index: -1;
+        }
+        
+        header {
+            background-color: rgba(34, 34, 34, 0.9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        nav {
+            margin-top: 10px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #ffd700;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .add-post {
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+        
+        .add-post h2 {
+            margin-top: 0;
+            color: #007bff;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 15px;
+            /* Increased from 8px to 15px */
+            font-weight: bold;
+            color: #fff;
+            display: block;
+            /* Ensure label takes full width */
+        }
+        
+        input[type="text"],
+        textarea {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: border-color 0.3s, background-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: #aaa;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 200px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: rgba(34, 34, 34, 0.9);
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            /* Increased from 20px to 25px */
+            width: 100%;
+        }
+        
+        .character-count {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: -15px;
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('blogApp', []);
+
+        app.controller('AddPostController', function($scope) {
+            $scope.post = {
+                title: '',
+                content: ''
+            };
+
+            $scope.addPost = function() {
+                // In a real application, this would send data to a backend
+                alert('Post added successfully!');
+                console.log('New post:', $scope.post);
+
+                // Reset form
+                $scope.post = {
+                    title: '',
+                    content: ''
+                };
+            };
+
+            // Character count for content
+            $scope.getContentLength = function() {
+                return $scope.post.content ? $scope.post.content.length : 0;
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="AddPostController">
+    <header>
+        <h1>Blog Post Web-App</h1>
+        <nav>
+            <a href="home.html">Dashboard</a>
+            <a href="add-post.html">Add Post</a>
+            <a href="post.html">Posts</a>
+            <a href="Opening_page.html">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="add-post">
+            <h2>Create New Post</h2>
+
+            <form ng-submit="addPost()">
+                <div class="form-group">
+                    <label for="title">Post Title</label>
+                    <input type="text" id="title" ng-model="post.title" placeholder="Enter a compelling title for your post" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Post Content</label>
+                    <textarea id="content" ng-model="post.content" placeholder="Share your thoughts, ideas, or story with the community..." required></textarea>
+                    <div class="character-count">{{getContentLength()}} characters</div>
+                </div>
+
+                <button type="submit">Publish Post</button>
+            </form>
+
+            <div class="actions">
+                <a href="home.html" class="btn">Back to Dashboard</a>
+                <a href="post.html" class="btn">View All Posts</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 My Blog App | Built with AngularJS + PHP</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="blogApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        /* Overlay to improve text readability */
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(125, 181, 238, 0.3);
+            z-index: -1;
+        }
+        
+        header {
+            background-color: rgba(34, 34, 34, 0.9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #ccc;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #007bff;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('blogApp', []);
+
+        app.controller('AuthController', function($scope) {
+            $scope.loginData = {};
+
+            $scope.login = function() {
+                if ($scope.loginData.username && $scope.loginData.password) {
+                    // Simulate authentication
+                    alert('Login successful! Redirecting to blog wall...');
+                    window.location.href = 'blog_wall.html';
+                } else {
+                    alert('Please enter both username and password');
+                }
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="AuthController">
+    <header>
+        <h1>Welcome to the BlogSphere</h1>
+    </header>
+    <div class="auth-container">
+        <h2>Login</h2>
+        <form ng-submit="login()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" ng-model="loginData.username" required placeholder="Enter your username">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" ng-model="loginData.password" required placeholder="Enter your password">
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+
+</html>

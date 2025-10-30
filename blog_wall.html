@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="blogApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Wall - Read Posts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-image: url('https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+        /* Overlay to improve text readability */
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(125, 181, 238, 0.3);
+            z-index: -1;
+        }
+        
+        header {
+            background-color: rgba(34, 34, 34, 0.9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        nav {
+            margin-top: 10px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #ffd700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .blog-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .blog-post {
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .blog-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        
+        .post-title {
+            font-size: 1.4rem;
+            margin: 0;
+            color: #007bff;
+        }
+        
+        .post-author {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .post-date {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .post-content {
+            flex-grow: 1;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .read-more {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            align-self: flex-start;
+        }
+        
+        .read-more:hover {
+            background-color: #0056b3;
+        }
+        
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background: rgba(0, 123, 255, 0.2);
+            color: #7db5ee;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: rgba(34, 34, 34, 0.9);
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            display: flex;
+        }
+        
+        .search-bar input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 40px;
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @media (max-width: 768px) {
+            .blog-wall {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 0 15px;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var app = angular.module('blogApp', []);
+
+        app.controller('BlogController', function($scope) {
+            // Sample blog posts data
+            $scope.blogPosts = [{
+                id: 1,
+                title: "Getting Started with Web Development",
+                author: "Alex Johnson",
+                date: "March 15, 2024",
+                content: "Web development is an exciting field that combines creativity with technical skills. In this post, I'll walk you through the basics of HTML, CSS, and JavaScript...",
+                tags: ["Web Development", "HTML", "CSS", "JavaScript"]
+            }, {
+                id: 2,
+                title: "The Art of Responsive Design",
+                author: "Sarah Williams",
+                date: "March 12, 2024",
+                content: "Responsive design is no longer optional in today's multi-device world. Learn how to create websites that look great on any screen size with these practical tips...",
+                tags: ["Responsive Design", "CSS", "UI/UX"]
+            }, {
+                id: 3,
+                title: "My Journey into AngularJS",
+                author: "Michael Chen",
+                date: "March 10, 2024",
+                content: "After years of working with jQuery, I decided to dive into AngularJS. Here's what I've learned about directives, controllers, and two-way data binding...",
+                tags: ["AngularJS", "JavaScript", "Frontend"]
+            }, {
+                id: 4,
+                title: "Building RESTful APIs with PHP",
+                author: "David Miller",
+                date: "March 8, 2024",
+                content: "Creating a robust API is essential for modern web applications. In this tutorial, I'll show you how to build a RESTful API using PHP and MySQL...",
+                tags: ["PHP", "API", "Backend", "MySQL"]
+            }, {
+                id: 5,
+                title: "The Power of CSS Grid",
+                author: "Emily Rodriguez",
+                date: "March 5, 2024",
+                content: "CSS Grid has revolutionized how we create layouts on the web. Let's explore some practical examples and see how it compares to Flexbox...",
+                tags: ["CSS", "Grid", "Layout", "Web Design"]
+            }, {
+                id: 6,
+                title: "Optimizing Website Performance",
+                author: "James Wilson",
+                date: "March 3, 2024",
+                content: "Slow websites lose visitors and conversions. Discover the key techniques for improving your website's loading speed and overall performance...",
+                tags: ["Performance", "Optimization", "Web Development"]
+            }];
+
+            $scope.searchQuery = "";
+
+            $scope.filteredPosts = function() {
+                if (!$scope.searchQuery) {
+                    return $scope.blogPosts;
+                }
+
+                var query = $scope.searchQuery.toLowerCase();
+                return $scope.blogPosts.filter(function(post) {
+                    return post.title.toLowerCase().includes(query) ||
+                        post.author.toLowerCase().includes(query) ||
+                        post.content.toLowerCase().includes(query) ||
+                        post.tags.some(function(tag) {
+                            return tag.toLowerCase().includes(query);
+                        });
+                });
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="BlogController">
+    <header>
+        <h1>Blog Post Web-App</h1>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="add-post.html">Add Post</a>
+            <a href="post.html">Post</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Blog Wall</h1>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search posts by title, author, or tags..." ng-model="searchQuery">
+            <button>Search</button>
+        </div>
+
+        <div class="blog-wall">
+            <div class="blog-post" ng-repeat="post in filteredPosts()">
+                <div class="post-header">
+                    <h2 class="post-title">{{post.title}}</h2>
+                    <div class="post-author">by {{post.author}}</div>
+                </div>
+                <div class="post-date">{{post.date}}</div>
+                <div class="post-content">
+                    {{post.content}}
+                </div>
+                <a href="#" class="read-more">Read Full Post</a>
+                <div class="post-tags">
+                    <span class="tag" ng-repeat="tag in post.tags">{{tag}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" ng-if="filteredPosts().length === 0">
+            <h2>No posts found</h2>
+            <p>Try adjusting your search terms or check back later for new content.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 My Blog App | Built with AngularJS + PHP</p>
+    </footer>
+</body>
+
+</html>
